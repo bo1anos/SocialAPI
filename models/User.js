@@ -5,33 +5,38 @@ const userSchema = new Schema(
   {
     username: {
       type: String,
+      unique:true,
       required: true,
-      max_length: 50,
+      max_length: 100,
+      trim:true,
     },
     email: {
       type: String,
       required: true,
       max_length: 50,
+      unique:true ,
+      match: `/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/`, 
     },
-    thoughts: {
-      type: String,
-      required: true,
-      max_length: 50,
-    },
-    friends: {
-      type: String,
-      required: true,
-      max_length: 50,
-    },
-    assignments: [assignmentSchema],
+    thoughts: [{
+      type: Schema.types.ObjectId,
+      ref:'Thought'
+    }],
+    friends: [{
+      type: Schema.types.ObjectId,
+      ref:'User'
+    }],
   },
   {
     toJSON: {
       virtuals: true,
       getters: true,
     },
+    id:false,
   }
 );
+userSchema.virtual('friendCount').get(function() {
+  return this.friends.length;
+});
 
 const User = model('User', userSchema);
 

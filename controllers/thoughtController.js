@@ -1,7 +1,7 @@
 const { Thought, User } = require('../models');
 
 // Aggregate function to get the number of students overall
-const reactionCount = async () =>
+const reactionCount = async (userId) =>
   Thought.aggregate()
     .count('reactionCount')
     .then((numberOfReactions) => numberOfReactions);
@@ -47,7 +47,7 @@ module.exports = {
   },
  updateThought(req, res){
    Thought.findOneAndUpdate(
-     {id: req.params.thoughtId},
+     {_id: req.params.thoughtId},
      {$set:req.body},
      {runValidators:true,new:true}
    )
@@ -89,9 +89,7 @@ module.exports = {
     )
       .then((thought) =>
         !thought
-          ? res
-              .status(404)
-              .json({ message: 'No thought found with that ID ' })
+          ? res.status(404).json({ message: 'No thought found with that ID ' })
           : res.json(thought)
       )
       .catch((err) => res.status(500).json(err));

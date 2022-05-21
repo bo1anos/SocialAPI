@@ -1,13 +1,14 @@
+//connecting our models
 const { Thought, User } = require('../models');
 
-// Aggregate function to get the number of students overall
+// Aggregate function to get the number of thoughts
 const reactionCount = async (userId) =>
   Thought.aggregate()
     .count('reactionCount')
     .then((numberOfReactions) => numberOfReactions);
 
 module.exports = {
-  // Get all students
+  // Get all thoughts
   getThoughts(req, res) {
     Thought.find()
       .then(async (thoughts) => {
@@ -22,7 +23,7 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
-  // Get a single student
+  // Get a single thought
   getSingleThought(req, res) {
     Thought.findOne({ _id: req.params.thoughtId })
       .select('-__v')
@@ -36,7 +37,7 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
-  // create a new student
+  // create a new thought
   createThought(req, res) {
     Thought.create(req.body)
       .then((thought) => res.json(thought))
@@ -45,6 +46,7 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
+  //update a thought
  updateThought(req, res){
    Thought.findOneAndUpdate(
      {_id: req.params.thoughtId},
@@ -59,7 +61,7 @@ module.exports = {
    )
    .catch((err)=>res.status(500).json(err));
  },
-  // Delete a student and remove them from the course
+  // Delete a thought 
  deleteThought(req, res) {
     Thought.findOneAndRemove({ _id: req.params.thoughtId })
       .then((thought) =>
@@ -78,7 +80,7 @@ module.exports = {
       });
   },
 
-  // Add an assignment to a student
+  // Add a reaction to a thought
  addReaction(req, res) {
     console.log('You are adding a reaction');
     console.log(req.body);
@@ -94,7 +96,7 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
-  // Remove assignment from a student
+  // Remove reaction from a thought
  deleteReaction(req, res) {
     Thought.findOneAndUpdate(
       { _id: req.params.thoughtId },
